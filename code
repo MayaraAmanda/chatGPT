@@ -1,137 +1,30 @@
-CREATE TABLE tabela1 (
-    coluna1 TEXT,
-    coluna2 INTEGER,
-    coluna3 REAL
-);
+import multiprocessing
 
-CREATE TABLE tabela2 (
-    coluna1 TEXT,
-    coluna2 INTEGER,
-    coluna3 REAL
-);
+# Função que será executada em paralelo
+def processar_dado(dado):
+    # Código de processamento para cada dado
+    # ...
+    resultado = dado * 2
+    # ...
 
-CREATE TABLE tabela3 (
-    coluna1 TEXT,
-    coluna2 INTEGER,
-    coluna3 REAL
-);
+    return resultado
 
+if __name__ == '__main__':
+    # Dados a serem processados
+    dados = [1, 2, 3, 4, 5]
 
+    # Número de processos paralelos
+    num_processos = multiprocessing.cpu_count()
 
+    # Criação do pool de processos
+    pool = multiprocessing.Pool(processes=num_processos)
 
+    # Mapeamento dos dados para os processos em paralelo
+    resultados = pool.map(processar_dado, dados)
 
+    # Fechamento do pool de processos
+    pool.close()
+    pool.join()
 
-
-import sqlite3
-
-# Conectar ao banco de dados SQLite (criará um novo arquivo de banco de dados se não existir)
-conn = sqlite3.connect('mydatabase.db')
-cursor = conn.cursor()
-
-# Criar tabela1
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS tabela1 (
-        coluna1 TEXT,
-        coluna2 INTEGER,
-        coluna3 REAL
-    )
-''')
-
-# Criar tabela2
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS tabela2 (
-        coluna1 TEXT,
-        coluna2 INTEGER,
-        coluna3 REAL
-    )
-''')
-
-# Criar tabela3
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS tabela3 (
-        coluna1 TEXT,
-        coluna2 INTEGER,
-        coluna3 REAL
-    )
-''')
-
-# Dados em memória
-dados_tabela1 = [
-    ('valor1', 1, 1.1),
-    ('valor2', 2, 2.2),
-    ('valor3', 3, 3.3)
-]
-
-dados_tabela2 = [
-    ('valor4', 4, 4.4),
-    ('valor5', 5, 5.5),
-    ('valor6', 6, 6.6)
-]
-
-dados_tabela3 = [
-    ('valor7', 7, 7.7),
-    ('valor8', 8, 8.8),
-    ('valor9', 9, 9.9)
-]
-
-# Inserir dados na tabela1
-cursor.executemany('INSERT INTO tabela1 VALUES (?, ?, ?)', dados_tabela1)
-
-# Inserir dados na tabela2
-cursor.executemany('INSERT INTO tabela2 VALUES (?, ?, ?)', dados_tabela2)
-
-# Inserir dados na tabela3
-cursor.executemany('INSERT INTO tabela3 VALUES (?, ?, ?)', dados_tabela3)
-
-# Confirmar as alterações no banco de dados
-conn.commit()
-
-# Fechar a conexão com o banco de dados
-conn.close()
-
-
-
-
-
-
-Transformar DICT em insert
-
-import csv
-import sqlite3
-
-# Dados a serem inseridos
-dados = [
-    {'coluna1': 'valor1', 'coluna2': 1, 'coluna3': 1.1},
-    {'coluna1': 'valor2', 'coluna2': 2, 'coluna3': 2.2},
-    {'coluna1': 'valor3', 'coluna2': 3, 'coluna3': 3.3}
-]
-
-# Abrir conexão com o banco de dados SQLite
-conn = sqlite3.connect('mydatabase.db')
-cursor = conn.cursor()
-
-# Criar tabela se ela não existir
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS tabela (
-        coluna1 TEXT,
-        coluna2 INTEGER,
-        coluna3 REAL
-    )
-''')
-
-# Iterar sobre os dados e executar as instruções de inserção
-for linha in dados:
-    cols = ', '.join(linha.keys())
-    placeholders = ', '.join(['?'] * len(linha))
-    valores = tuple(linha.values())
-    cursor.execute(f'INSERT INTO tabela ({cols}) VALUES ({placeholders})', valores)
-
-# Confirmar as alterações no banco de dados
-conn.commit()
-
-# Fechar a conexão com o banco de dados
-conn.close()
-
-
-
-
+    # Exibir os resultados
+    print(resultados)
