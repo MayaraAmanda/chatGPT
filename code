@@ -88,3 +88,50 @@ conn.commit()
 
 # Fechar a conexão com o banco de dados
 conn.close()
+
+
+
+
+
+
+Transformar DICT em insert
+
+import csv
+import sqlite3
+
+# Dados a serem inseridos
+dados = [
+    {'coluna1': 'valor1', 'coluna2': 1, 'coluna3': 1.1},
+    {'coluna1': 'valor2', 'coluna2': 2, 'coluna3': 2.2},
+    {'coluna1': 'valor3', 'coluna2': 3, 'coluna3': 3.3}
+]
+
+# Abrir conexão com o banco de dados SQLite
+conn = sqlite3.connect('mydatabase.db')
+cursor = conn.cursor()
+
+# Criar tabela se ela não existir
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS tabela (
+        coluna1 TEXT,
+        coluna2 INTEGER,
+        coluna3 REAL
+    )
+''')
+
+# Iterar sobre os dados e executar as instruções de inserção
+for linha in dados:
+    cols = ', '.join(linha.keys())
+    placeholders = ', '.join(['?'] * len(linha))
+    valores = tuple(linha.values())
+    cursor.execute(f'INSERT INTO tabela ({cols}) VALUES ({placeholders})', valores)
+
+# Confirmar as alterações no banco de dados
+conn.commit()
+
+# Fechar a conexão com o banco de dados
+conn.close()
+
+
+
+
