@@ -1,30 +1,25 @@
-import multiprocessing
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream, ObjectInputStream, ObjectOutputStream}
 
-# Função que será executada em paralelo
-def processar_dado(dado):
-    # Código de processamento para cada dado
-    # ...
-    resultado = dado * 2
-    # ...
+def deepCopy[T](obj: T): T = {
+  val byteOut = new ByteArrayOutputStream()
+  val objOut = new ObjectOutputStream(byteOut)
+  objOut.writeObject(obj)
+  objOut.close()
+  
+  val byteIn = new ByteArrayInputStream(byteOut.toByteArray)
+  val objIn = new ObjectInputStream(byteIn)
+  val copiedObj = objIn.readObject().asInstanceOf[T]
+  objIn.close()
+  
+  copiedObj
+}
 
-    return resultado
 
-if __name__ == '__main__':
-    # Dados a serem processados
-    dados = [1, 2, 3, 4, 5]
+Neste exemplo, a função deepCopy recebe um objeto obj como parâmetro e retorna uma cópia profunda desse objeto. Através da serialização e desserialização, uma nova instância do objeto é criada, garantindo uma cópia independente de todos os seus campos e referências.
 
-    # Número de processos paralelos
-    num_processos = multiprocessing.cpu_count()
+Lembre-se de que essa abordagem só funcionará corretamente se todos os objetos contidos na estrutura que você está copiando forem serializáveis. Caso contrário, você pode precisar implementar uma lógica personalizada para copiar cada objeto individualmente, considerando suas particularidades.
 
-    # Criação do pool de processos
-    pool = multiprocessing.Pool(processes=num_processos)
 
-    # Mapeamento dos dados para os processos em paralelo
-    resultados = pool.map(processar_dado, dados)
 
-    # Fechamento do pool de processos
-    pool.close()
-    pool.join()
 
-    # Exibir os resultados
-    print(resultados)
+
